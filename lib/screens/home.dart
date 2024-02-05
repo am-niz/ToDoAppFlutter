@@ -1,7 +1,8 @@
 // TODO Implement this library.
 
 import 'package:flutter/material.dart';
-import 'package:todoapp/constants/colors.dart';
+import '../constants/colors.dart';
+import '../widgets/todo_item.dart';
 
 class Home extends StatelessWidget {
   // const Home({key? key}) : super(key: key);
@@ -30,7 +31,18 @@ class Home extends StatelessWidget {
                         fontSize: 30,
                         fontWeight: FontWeight.w500,
                       ),),
-                  )
+                  ),
+                  ToDoItem(),
+                  ToDoItem(),
+                  ToDoItem(),
+                  ToDoItem(),
+                  ToDoItem(),
+                  ToDoItem(),
+                  ToDoItem(),
+                  ToDoItem(),
+                  ToDoItem(),
+                  ToDoItem(),
+
                 ],
               ),
             ),
