@@ -1,14 +1,23 @@
-import 'package:flutter/material.dart';
+
+import 'package:todoapp/screens/home.dart';
 import 'package:todoapp/constants/colors.dart';
+import 'package:flutter/material.dart';
+import 'package:todoapp/model/todo.dart';
+
 
 class ToDoItem extends StatelessWidget {
+  final ToDo todo;
+  final onToDoChanged;
+  final onDeleteItem;
+  const ToDoItem({Key? key, required this.todo, required this.onToDoChanged, required this.onDeleteItem}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(bottom: 20),
       child: ListTile(
         onTap: () {
-          print("clicked");
+          // print("clicked");
+          onToDoChanged(todo);
         },
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
@@ -16,14 +25,14 @@ class ToDoItem extends StatelessWidget {
         contentPadding: EdgeInsets.all(6),
         tileColor: Colors.white,
         leading: Icon(
-          Icons.check_box,
+          todo.isDone ? Icons.check_box : Icons.check_box_outline_blank,
           color: tdBlue,
         ),
-        title: Text("Check mail",
+        title: Text(todo.todoText!,
             style: TextStyle(
               fontSize: 16,
               color: tdBlack,
-              decoration: TextDecoration.lineThrough,
+              decoration: todo.isDone? TextDecoration.lineThrough : null,
             )),
         trailing: Container(
           height: 35,
@@ -37,7 +46,8 @@ class ToDoItem extends StatelessWidget {
             iconSize: 18,
             icon: Icon(Icons.delete),
             onPressed: () {
-              print("clicked");
+              // print("clicked");
+              onDeleteItem(todo.id);
             },
           ),
         ),
