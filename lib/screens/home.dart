@@ -1,6 +1,5 @@
 // TODO Implement this library.
 import 'package:flutter/material.dart';
-
 import 'package:todoapp/constants/colors.dart';
 import 'package:todoapp/model/todo.dart';
 import 'package:todoapp/widgets/todo_item.dart';
@@ -13,6 +12,14 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   // const Home({key? key}) : super(key: key);
   final todosList = ToDo.todoList();
+  List<ToDo> _foundToDo = [];
+  final _todoController = TextEditingController();
+
+  @override
+  void initState() {
+    _foundToDo = todosList;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +50,7 @@ class _HomeState extends State<Home> {
                             ),
                           ),
                         ),
-                        for (ToDo todoo in todosList)
+                        for (ToDo todoo in _foundToDo.reversed)
                           ToDoItem(
                             todo: todoo,
                             onToDoChanged: _handleToDoChange,
@@ -83,6 +90,7 @@ class _HomeState extends State<Home> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: TextField(
+                        controller: _todoController,
                         decoration: InputDecoration(
                             hintText: "Add a new todo item",
                             border: InputBorder.none),
@@ -90,13 +98,20 @@ class _HomeState extends State<Home> {
                     ),
                   ),
                   Container(
-                    margin: EdgeInsets.only(bottom: 20, right: 20),
+                    margin: EdgeInsets.only(bottom: 25, right: 20),
                     child: ElevatedButton(
                       child: Text(
                         "+",
                         style: TextStyle(fontSize: 40),
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        _addToDoItem(_todoController.text);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        // backgroundColor: tdBlue,
+                        minimumSize: Size(30, 30),
+                        elevation: 10,
+                      ),
                     ),
                   )
                 ],
@@ -110,11 +125,36 @@ class _HomeState extends State<Home> {
     setState(() {
       todo.isDone = !todo.isDone;
     });
-
   }
+
   void _deleteToDoItem(String id) {
     setState(() {
       todosList.removeWhere((item) => item.id == id);
+    });
+  }
+
+  void _addToDoItem(String toDo) {
+    setState(() {
+      todosList.add(ToDo(
+          id: DateTime.now().millisecondsSinceEpoch.toString(),
+          todoText: toDo));
+    });
+    _todoController.clear();
+  }
+
+  void _runFilter(String enteredKeyword) {
+    List<ToDo> results = [];
+    if (enteredKeyword.isEmpty) {
+      results = todosList;
+    } else {
+      results = todosList
+          .where((item) => item.todoText!
+              .toLowerCase()
+              .contains(enteredKeyword.toLowerCase()))
+          .toList();
+    }
+    setState(() {
+      _foundToDo = results;
     });
   }
 
@@ -126,6 +166,7 @@ class _HomeState extends State<Home> {
       decoration: BoxDecoration(
           color: Colors.white, borderRadius: BorderRadius.circular(20)),
       child: TextField(
+        onChanged: (value) => _runFilter(value),
         decoration: InputDecoration(
             contentPadding: EdgeInsets.all(10),
             prefixIcon: Icon(
